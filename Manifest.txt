@@ -1,0 +1,8 @@
+.autotest
+History.txt
+Manifest.txt
+README.txt
+Rakefile
+bin/awesome_hash
+lib/awesome_hash.rb
+test/test_awesome_hash.rb
