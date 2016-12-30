@@ -115,4 +115,8 @@ class TestAwesomeHash < MiniTest::Test
     assert_kind_of AwesomeHash, @ahash["foo"]
     assert_kind_of Hash, @ahash.to_h["foo"]
   end
+
+  def test_assoc
+    assert_equal ["foo", "bar"], @ahash.assoc(:foo)
+  end
 end
