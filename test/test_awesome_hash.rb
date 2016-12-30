@@ -83,4 +83,10 @@ class TestAwesomeHash < MiniTest::Test
     @ahash.default = 3
     assert_equal 3, @ahash.default("foo")
   end
+
+  def test_convert_subclass
+    @klass = Class.new(AwesomeHash)
+    @ahash = @klass[:foo => {:bar => :baz}]
+    assert_kind_of @klass, @ahash["foo"]
+  end
 end

@@ -15,25 +15,25 @@ convert_key(VALUE *argv)
 }
 
 static VALUE
-rb_awesome_hash_new(VALUE hash);
+rb_awesome_hash_new(VALUE klass, VALUE hash);
 
 static VALUE
-convert_value(VALUE obj);
+convert_value(VALUE klass, VALUE obj);
 
 static VALUE
-convert_value(VALUE obj)
+convert_value(VALUE klass, VALUE obj)
 {
 	long i;
 	VALUE collect;
 	if (!SPECIAL_CONST_P(obj)) {
 	    switch (BUILTIN_TYPE(obj)) {
 	      case T_HASH:
-		obj = rb_awesome_hash_new(obj);
+		obj = rb_awesome_hash_new(klass, obj);
 		break;
 	      case T_ARRAY:
 		collect = rb_ary_new2(RARRAY_LEN(obj));
 		for (i = 0; i < RARRAY_LEN(obj); i++) {
-			rb_ary_push(collect, convert_value(RARRAY_AREF(obj, i)));
+			rb_ary_push(collect, convert_value(klass, RARRAY_AREF(obj, i)));
 		}
 		obj = collect;
 		break;
@@ -43,20 +43,26 @@ convert_value(VALUE obj)
 }
 
 static int
-convert_key_i(VALUE key, VALUE value, VALUE hash)
+convert_key_i(VALUE key, VALUE value, VALUE arg)
 {
+	VALUE *args = (VALUE *)arg;
+	VALUE klass = args[0];
+	VALUE hash = args[1];
+
 	convert_key(&key);
-	rb_hash_aset(hash, key, convert_value(value));
+	rb_hash_aset(hash, key, convert_value(klass, value));
 	return ST_CONTINUE;
 }
 
 static VALUE
-rb_awesome_hash_new(VALUE hash2)
+rb_awesome_hash_new(VALUE klass, VALUE hash2)
 {
-	VALUE hash1;
-	hash1 =	rb_funcall(rb_cAwesomeHash, rb_intern("new"), 0);
-	rb_hash_foreach(hash2, convert_key_i, hash1);
-	return hash1;
+	VALUE args[2];
+
+	args[0] = klass;
+	args[1] = rb_funcall(klass, rb_intern("new"), 0);
+	rb_hash_foreach(hash2, convert_key_i, (VALUE)args);
+	return args[1];
 }
 
 static VALUE
@@ -64,7 +70,7 @@ rb_awesome_hash_s_create(int argc, VALUE *argv, VALUE klass)
 {
 	VALUE hash;
 	hash = rb_call_super(argc, argv);
-	return rb_awesome_hash_new(hash);
+	return rb_awesome_hash_new(klass, hash);
 }
 
 static VALUE
@@ -78,7 +84,7 @@ static VALUE
 rb_awesome_hash_aset(VALUE hash, VALUE key, VALUE val)
 {
 	convert_key(&key);
-	return rb_hash_aset(hash, key, convert_value(val));
+	return rb_hash_aset(hash, key, convert_value(RBASIC_CLASS(hash), val));
 }
 
 /*
@@ -138,7 +144,7 @@ rb_awesome_hash_invert(VALUE hash)
 static VALUE
 rb_awesome_hash_update(VALUE self, VALUE hash)
 {
-	hash = rb_awesome_hash_new(hash);
+	hash = rb_awesome_hash_new(RBASIC_CLASS(self), hash);
 	return rb_call_super(1, &hash);
 }
 
