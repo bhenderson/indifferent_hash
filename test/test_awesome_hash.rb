@@ -60,4 +60,8 @@ class TestAwesomeHash < MiniTest::Test
     @ahash[:foo] = AwesomeHash["bar" => "baz"]
     assert_equal "baz", @ahash.dig(:foo, :bar)
   end
+
+  def test_fetch
+    assert_equal "bar",@ahash.fetch(:foo)
+  end
 end

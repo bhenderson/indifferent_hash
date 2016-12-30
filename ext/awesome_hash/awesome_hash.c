@@ -47,6 +47,13 @@ rb_awesome_hash_aset(VALUE hash, VALUE key, VALUE val)
 }
 
 static VALUE
+rb_awesome_hash_fetch(int argc, VALUE *argv, VALUE hash)
+{
+	convert_key(argv);
+	return rb_call_super(argc, argv);
+}
+
+static VALUE
 rb_awesome_hash_values_at(int argc, VALUE *argv, VALUE hash)
 {
 	VALUE result = rb_ary_new2(argc);
@@ -81,44 +88,6 @@ rb_awesome_hash_invert(VALUE hash)
     return h;
 }
 
-/* update */
-
-/* static void */
-/* rb_hash_modify(VALUE hash) */
-/* { */
-    /* rb_check_frozen(hash); */
-    /* hash_tbl(hash); */
-/* } */
-
-/* static VALUE */
-/* to_hash(VALUE hash) */
-/* { */
-    /* return rb_convert_type(hash, T_HASH, "Hash", "to_hash"); */
-/* } */
-
-/* static int */
-/* rb_hash_update_block_i(VALUE key, VALUE value, VALUE hash) */
-/* { */
-    /* RHASH_UPDATE(hash, key, rb_hash_update_block_callback, value); */
-    /* return ST_CONTINUE; */
-/* } */
-
-/* static VALUE */
-/* rb_awesome_hash_update(VALUE hash1, VALUE hash2) */
-/* { */
-    /* rb_hash_modify(hash1); */
-    /* hash2 = to_hash(hash2); */
-    /* if (rb_block_given_p()) { */
-	/* rb_hash_foreach(hash2, rb_hash_update_block_i, hash1); */
-    /* } */
-    /* else { */
-	/* rb_hash_foreach(hash2, rb_hash_update_i, hash1); */
-    /* } */
-    /* return hash1; */
-/* } */
-
-/* update end */
-
 static VALUE
 rb_awesome_hash_has_key(VALUE hash, VALUE key)
 {
@@ -142,6 +111,7 @@ void Init_awesome_hash()
 
 	rb_define_method(rb_cAwesomeHash,"[]", rb_awesome_hash_aref, 1);
 	rb_define_method(rb_cAwesomeHash,"[]=", rb_awesome_hash_aset, 2);
+	rb_define_method(rb_cAwesomeHash,"fetch", rb_awesome_hash_fetch, -1);
 	rb_define_method(rb_cAwesomeHash,"store", rb_awesome_hash_aset, 2);
 
 	rb_define_method(rb_cAwesomeHash,"values_at", rb_awesome_hash_values_at, -1);
