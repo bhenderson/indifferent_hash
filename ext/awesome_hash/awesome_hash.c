@@ -87,6 +87,13 @@ rb_awesome_hash_aset(VALUE hash, VALUE key, VALUE val)
 	return rb_hash_aset(hash, key, convert_value(RBASIC_CLASS(hash), val));
 }
 
+static VALUE
+rb_awesome_hash_equal(VALUE self, VALUE hash)
+{
+	hash = rb_awesome_hash_new(RBASIC_CLASS(self), hash);
+	return rb_call_super(1, &hash);
+}
+
 /*
 static VALUE
 rb_awesome_hash_default(int argc, VALUE *argv, VALUE hash)
@@ -176,6 +183,7 @@ void Init_awesome_hash()
 
 	rb_define_singleton_method(rb_cAwesomeHash, "[]", rb_awesome_hash_s_create, -1);
 
+	rb_define_method(rb_cAwesomeHash,"==", rb_awesome_hash_equal, 1);
 	rb_define_method(rb_cAwesomeHash,"[]", rb_awesome_hash_aref, 1);
 	rb_define_method(rb_cAwesomeHash,"[]=", rb_awesome_hash_aset, 2);
 	rb_define_method(rb_cAwesomeHash,"fetch", rb_awesome_hash_fetch, -1);

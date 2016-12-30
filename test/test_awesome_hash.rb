@@ -110,6 +110,9 @@ class TestAwesomeHash < MiniTest::Test
   end
 
   def test_to_h
+    @ahash[:foo] = {:bar => :baz}
     assert_kind_of Hash, @ahash.to_h
+    assert_kind_of AwesomeHash, @ahash["foo"]
+    assert_kind_of Hash, @ahash.to_h["foo"]
   end
 end
