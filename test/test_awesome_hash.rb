@@ -101,6 +101,7 @@ class TestAwesomeHash < MiniTest::Test
   def test_merge
     @newhash = @ahash.merge("bar" => "baz")
     refute @ahash.key?("bar")
+    assert_kind_of AwesomeHash, @newhash
     assert_equal "baz", @newhash[:bar]
   end
 

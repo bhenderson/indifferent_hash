@@ -205,6 +205,7 @@ void Init_awesome_hash()
 	rb_define_method(rb_cAwesomeHash,"update", rb_awesome_hash_update, 1);
 	rb_define_method(rb_cAwesomeHash,"replace", rb_awesome_hash_replace, 1);
 	rb_define_method(rb_cAwesomeHash,"merge!", rb_awesome_hash_update, 1);
+	// merge just works
 	/* rb_define_method(rb_cAwesomeHash,"merge", rb_awesome_hash_merge, 1); */
 	rb_define_method(rb_cAwesomeHash, "assoc", rb_awesome_hash_assoc, 1);
 
