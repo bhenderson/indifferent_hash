@@ -149,6 +149,13 @@ rb_awesome_hash_update(VALUE self, VALUE hash)
 }
 
 static VALUE
+rb_awesome_hash_replace(VALUE self, VALUE hash)
+{
+	hash = rb_awesome_hash_new(RBASIC_CLASS(self), hash);
+	return rb_call_super(1, &hash);
+}
+
+static VALUE
 rb_awesome_hash_has_key(VALUE hash, VALUE key)
 {
 	convert_key(&key);
@@ -181,7 +188,7 @@ void Init_awesome_hash()
 	rb_define_method(rb_cAwesomeHash,"delete", rb_awesome_hash_delete_m, 1);
 	rb_define_method(rb_cAwesomeHash,"invert", rb_awesome_hash_invert, 0);
 	rb_define_method(rb_cAwesomeHash,"update", rb_awesome_hash_update, 1);
-	/* rb_define_method(rb_cAwesomeHash,"replace", rb_awesome_hash_replace, 1); */
+	rb_define_method(rb_cAwesomeHash,"replace", rb_awesome_hash_replace, 1);
 	rb_define_method(rb_cAwesomeHash,"merge!", rb_awesome_hash_update, 1);
 	/* rb_define_method(rb_cAwesomeHash,"merge", rb_awesome_hash_merge, 1); */
 	/* rb_define_method(rb_cAwesomeHash, "assoc", rb_awesome_hash_assoc, 1); */

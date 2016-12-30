@@ -31,7 +31,7 @@ class TestAwesomeHash < MiniTest::Test
   end
 
   def test_values_at
-    @ahash[:bar] = "baz"
+    @ahash["bar"] = "baz"
     assert_equal ["bar", "baz"], @ahash.values_at(:foo, :bar)
   end
 
@@ -69,6 +69,9 @@ class TestAwesomeHash < MiniTest::Test
   def test_update
     @ahash.update :bar => :baz
     assert_equal :baz, @ahash["bar"]
+
+    @ahash.update(:foo => 3) { |*arg| arg }
+    assert_equal ["foo", "bar", 3], @ahash[:foo]
   end
 
   def test_store_recursive
@@ -88,5 +91,20 @@ class TestAwesomeHash < MiniTest::Test
     @klass = Class.new(AwesomeHash)
     @ahash = @klass[:foo => {:bar => :baz}]
     assert_kind_of @klass, @ahash["foo"]
+  end
+
+  def test_fetch
+    assert_equal "bar", @ahash.fetch(:bar){|key| key}
+  end
+
+  def test_merge
+    @newhash = @ahash.merge("bar" => "baz")
+    refute @ahash.key?("bar")
+    assert_equal "baz", @newhash[:bar]
+  end
+
+  def test_replace
+    @ahash.replace(:bar => "baz")
+    assert_equal ["bar"], @ahash.keys
   end
 end
