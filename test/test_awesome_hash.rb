@@ -52,8 +52,9 @@ class TestAwesomeHash < MiniTest::Test
   end
 
   def test_recursive_create
-    @ahash = AwesomeHash[:foo => {:bar => :baz}]
-    assert_kind_of AwesomeHash, @ahash[:foo]
+    @ahash = AwesomeHash[:foo => {:bar => :baz, :arr => [{:taz => 1}]}]
+    assert_kind_of AwesomeHash, @ahash["foo"]
+    assert_kind_of AwesomeHash, @ahash["foo"]["arr"][0]
   end
 
   def test_dig
@@ -63,5 +64,15 @@ class TestAwesomeHash < MiniTest::Test
 
   def test_fetch
     assert_equal "bar",@ahash.fetch(:foo)
+  end
+
+  def test_update
+    @ahash.update :bar => :baz
+    assert_equal :baz, @ahash["bar"]
+  end
+
+  def test_store_recursive
+    @ahash[:bar] = {:baz => :taz}
+    assert_kind_of AwesomeHash, @ahash[:bar]
   end
 end

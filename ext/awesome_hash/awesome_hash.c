@@ -1,5 +1,7 @@
 #include <ruby.h>
 
+VALUE rb_cAwesomeHash;
+
 static void
 convert_key(VALUE *argv)
 {
@@ -12,24 +14,57 @@ convert_key(VALUE *argv)
 	}
 }
 
+static VALUE
+rb_awesome_hash_new(VALUE hash);
+
+static VALUE
+convert_value(VALUE obj);
+
+static VALUE
+convert_value(VALUE obj)
+{
+	long i;
+	VALUE collect;
+	if (!SPECIAL_CONST_P(obj)) {
+	    switch (BUILTIN_TYPE(obj)) {
+	      case T_HASH:
+		obj = rb_awesome_hash_new(obj);
+		break;
+	      case T_ARRAY:
+		collect = rb_ary_new2(RARRAY_LEN(obj));
+		for (i = 0; i < RARRAY_LEN(obj); i++) {
+			rb_ary_push(collect, convert_value(RARRAY_AREF(obj, i)));
+		}
+		obj = collect;
+		break;
+	    }
+	}
+	return obj;
+}
+
 static int
 convert_key_i(VALUE key, VALUE value, VALUE hash)
 {
-	if (SYMBOL_P(key)) {
-		rb_hash_delete_entry(hash, key);
-		rb_hash_aset(hash, rb_sym2str(key), value);
-	}
+	convert_key(&key);
+	rb_hash_aset(hash, key, convert_value(value));
 	return ST_CONTINUE;
+}
+
+static VALUE
+rb_awesome_hash_new(VALUE hash2)
+{
+	VALUE hash1;
+	hash1 =	rb_funcall(rb_cAwesomeHash, rb_intern("new"), 0);
+	rb_hash_foreach(hash2, convert_key_i, hash1);
+	return hash1;
 }
 
 static VALUE
 rb_awesome_hash_s_create(int argc, VALUE *argv, VALUE klass)
 {
-	VALUE hash, ahash;
+	VALUE hash;
 	hash = rb_call_super(argc, argv);
-	ahash = rb_hash_dup(hash);
-	rb_hash_foreach(hash, convert_key_i, ahash);
-	return ahash;
+	return rb_awesome_hash_new(hash);
 }
 
 static VALUE
@@ -89,6 +124,13 @@ rb_awesome_hash_invert(VALUE hash)
 }
 
 static VALUE
+rb_awesome_hash_update(VALUE self, VALUE hash)
+{
+	hash = rb_awesome_hash_new(hash);
+	return rb_call_super(1, &hash);
+}
+
+static VALUE
 rb_awesome_hash_has_key(VALUE hash, VALUE key)
 {
 	convert_key(&key);
@@ -105,7 +147,7 @@ rb_awesome_hash_dig(int argc, VALUE *argv, VALUE self)
 
 void Init_awesome_hash()
 {
-	VALUE rb_cAwesomeHash = rb_define_class("AwesomeHash", rb_cHash);
+	rb_cAwesomeHash = rb_define_class("AwesomeHash", rb_cHash);
 
 	rb_define_singleton_method(rb_cAwesomeHash, "[]", rb_awesome_hash_s_create, -1);
 
@@ -118,7 +160,7 @@ void Init_awesome_hash()
 
 	rb_define_method(rb_cAwesomeHash,"delete", rb_awesome_hash_delete_m, 1);
 	rb_define_method(rb_cAwesomeHash,"invert", rb_awesome_hash_invert, 0);
-	/* rb_define_method(rb_cAwesomeHash,"update", rb_awesome_hash_update, 1); */
+	rb_define_method(rb_cAwesomeHash,"update", rb_awesome_hash_update, 1);
 	/* rb_define_method(rb_cAwesomeHash,"replace", rb_awesome_hash_replace, 1); */
 	/* rb_define_method(rb_cAwesomeHash,"merge!", rb_awesome_hash_update, 1); */
 	/* rb_define_method(rb_cAwesomeHash,"merge", rb_awesome_hash_merge, 1); */
