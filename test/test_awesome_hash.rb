@@ -37,6 +37,7 @@ class TestAwesomeHash < MiniTest::Test
 
   def test_delete
     assert_equal "bar", @ahash.delete(:foo)
+    assert_equal [], @ahash.keys
   end
 
   def test_invert
@@ -106,5 +107,9 @@ class TestAwesomeHash < MiniTest::Test
   def test_replace
     @ahash.replace(:bar => "baz")
     assert_equal ["bar"], @ahash.keys
+  end
+
+  def test_to_h
+    assert_kind_of Hash, @ahash.to_h
   end
 end
