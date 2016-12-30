@@ -78,8 +78,20 @@ static VALUE
 rb_awesome_hash_aset(VALUE hash, VALUE key, VALUE val)
 {
 	convert_key(&key);
-	return rb_hash_aset(hash, key, val);
+	return rb_hash_aset(hash, key, convert_value(val));
 }
+
+/*
+static VALUE
+rb_awesome_hash_default(int argc, VALUE *argv, VALUE hash)
+{
+	rb_check_arity(argc, 0, 1);
+	if (argc) {
+		convert_key(argv);
+	}
+	return rb_call_super(argc, argv);
+}
+*/
 
 static VALUE
 rb_awesome_hash_fetch(int argc, VALUE *argv, VALUE hash)
@@ -155,6 +167,8 @@ void Init_awesome_hash()
 	rb_define_method(rb_cAwesomeHash,"[]=", rb_awesome_hash_aset, 2);
 	rb_define_method(rb_cAwesomeHash,"fetch", rb_awesome_hash_fetch, -1);
 	rb_define_method(rb_cAwesomeHash,"store", rb_awesome_hash_aset, 2);
+	// see tests
+	/* rb_define_method(rb_cAwesomeHash,"default", rb_awesome_hash_default, -1); */
 
 	rb_define_method(rb_cAwesomeHash,"values_at", rb_awesome_hash_values_at, -1);
 
@@ -162,7 +176,7 @@ void Init_awesome_hash()
 	rb_define_method(rb_cAwesomeHash,"invert", rb_awesome_hash_invert, 0);
 	rb_define_method(rb_cAwesomeHash,"update", rb_awesome_hash_update, 1);
 	/* rb_define_method(rb_cAwesomeHash,"replace", rb_awesome_hash_replace, 1); */
-	/* rb_define_method(rb_cAwesomeHash,"merge!", rb_awesome_hash_update, 1); */
+	rb_define_method(rb_cAwesomeHash,"merge!", rb_awesome_hash_update, 1);
 	/* rb_define_method(rb_cAwesomeHash,"merge", rb_awesome_hash_merge, 1); */
 	/* rb_define_method(rb_cAwesomeHash, "assoc", rb_awesome_hash_assoc, 1); */
 

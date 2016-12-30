@@ -75,4 +75,12 @@ class TestAwesomeHash < MiniTest::Test
     @ahash[:bar] = {:baz => :taz}
     assert_kind_of AwesomeHash, @ahash[:bar]
   end
+
+  def test_default
+    # The 2.x docs as well as ActiveSupport say that default(key) should
+    # return like fetch(key, default) but in my testing, no ruby version ever
+    # did this.
+    @ahash.default = 3
+    assert_equal 3, @ahash.default("foo")
+  end
 end
