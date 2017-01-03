@@ -84,13 +84,13 @@ static VALUE
 rb_awesome_hash_aset(VALUE hash, VALUE key, VALUE val)
 {
 	convert_key(&key);
-	return rb_hash_aset(hash, key, convert_value(RBASIC_CLASS(hash), val));
+	return rb_hash_aset(hash, key, convert_value(rb_obj_class(hash), val));
 }
 
 static VALUE
 rb_awesome_hash_equal(VALUE self, VALUE hash)
 {
-	hash = rb_awesome_hash_new(RBASIC_CLASS(self), hash);
+	hash = rb_awesome_hash_new(rb_obj_class(self), hash);
 	return rb_call_super(1, &hash);
 }
 
@@ -151,14 +151,14 @@ rb_awesome_hash_invert(VALUE hash)
 static VALUE
 rb_awesome_hash_update(VALUE self, VALUE hash)
 {
-	hash = rb_awesome_hash_new(RBASIC_CLASS(self), hash);
+	hash = rb_awesome_hash_new(rb_obj_class(self), hash);
 	return rb_call_super(1, &hash);
 }
 
 static VALUE
 rb_awesome_hash_replace(VALUE self, VALUE hash)
 {
-	hash = rb_awesome_hash_new(RBASIC_CLASS(self), hash);
+	hash = rb_awesome_hash_new(rb_obj_class(self), hash);
 	return rb_call_super(1, &hash);
 }
 
