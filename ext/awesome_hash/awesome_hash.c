@@ -57,7 +57,7 @@ rb_awesome_hash_new(VALUE klass, VALUE hash2)
 	VALUE args[2];
 
 	args[0] = klass;
-	args[1] = rb_funcall(klass, rb_intern("new"), 0);
+	args[1] = rb_class_new_instance(0, 0, klass);
 	rb_hash_foreach(hash2, convert_key_i, (VALUE)args);
 	return args[1];
 }
