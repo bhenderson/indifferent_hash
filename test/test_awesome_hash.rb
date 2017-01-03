@@ -18,6 +18,11 @@ class TestAwesomeHash < MiniTest::Test
     assert_equal Hash["foo", :bar, "baz", :taz], @ahash.to_h
   end
 
+  def test_class_create_from_array
+    @ahash = AwesomeHash[ [[:a], [:b, 2]] ]
+    assert_equal({"a" => nil, "b" => 2}, @ahash)
+  end
+
   def test_class_create_fails_with_array_of_non_tuples
     assert_output nil, /warning: wrong element/ do
       AwesomeHash[ [:foo, :bar] ]

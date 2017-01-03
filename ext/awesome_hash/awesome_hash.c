@@ -171,8 +171,8 @@ rb_awesome_hash_s_create(int argc, VALUE *argv, VALUE klass)
 					case 2:
 						val = RARRAY_AREF(v, 1);
 					case 1:
-						RARRAY_AREF(v, 0);
-						some_hash_aset(hash, key, val);
+						key = RARRAY_AREF(v, 0);
+						rb_awesome_hash_aset(hash, key, val);
 				}
 			}
 			return hash;
