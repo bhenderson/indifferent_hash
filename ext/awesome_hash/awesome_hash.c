@@ -8,10 +8,7 @@ convert_key(VALUE *argv)
 	VALUE key;
 	key = argv[0];
 
-	if (SYMBOL_P(key)) {
-		key = rb_sym2str(key);
-		argv[0] = key;
-	}
+	if (SYMBOL_P(key)) argv[0] = rb_sym2str(key);
 }
 
 static VALUE
@@ -25,19 +22,19 @@ convert_value(VALUE klass, VALUE obj)
 {
 	long i;
 	VALUE collect;
-	if (!SPECIAL_CONST_P(obj)) {
-	    switch (BUILTIN_TYPE(obj)) {
-	      case T_HASH:
-		obj = rb_awesome_hash_new(klass, obj);
-		break;
-	      case T_ARRAY:
-		collect = rb_ary_new2(RARRAY_LEN(obj));
-		for (i = 0; i < RARRAY_LEN(obj); i++) {
-			rb_ary_push(collect, convert_value(klass, RARRAY_AREF(obj, i)));
-		}
-		obj = collect;
-		break;
-	    }
+
+	if (SPECIAL_CONST_P(obj)) return obj;
+	switch (BUILTIN_TYPE(obj)) {
+		case T_HASH:
+			obj = rb_awesome_hash_new(klass, obj);
+			break;
+		case T_ARRAY:
+			collect = rb_ary_new2(RARRAY_LEN(obj));
+			for (i = 0; i < RARRAY_LEN(obj); i++) {
+				rb_ary_push(collect, convert_value(klass, RARRAY_AREF(obj, i)));
+			}
+			obj = collect;
+			break;
 	}
 	return obj;
 }
@@ -99,9 +96,7 @@ static VALUE
 rb_awesome_hash_default(int argc, VALUE *argv, VALUE hash)
 {
 	rb_check_arity(argc, 0, 1);
-	if (argc) {
-		convert_key(argv);
-	}
+	if (argc) convert_key(argv);
 	return rb_call_super(argc, argv);
 }
 */
@@ -140,12 +135,12 @@ rb_awesome_hash_invert_i(VALUE key, VALUE value, VALUE hash)
 }
 
 static VALUE
-rb_awesome_hash_invert(VALUE hash)
+rb_awesome_hash_invert(VALUE self)
 {
-    VALUE h = rb_hash_new();
+	VALUE hash = rb_newobj_of(rb_obj_class(self), 0);
 
-    rb_hash_foreach(hash, rb_awesome_hash_invert_i, h);
-    return h;
+	rb_hash_foreach(self, rb_awesome_hash_invert_i, hash);
+	return hash;
 }
 
 static VALUE

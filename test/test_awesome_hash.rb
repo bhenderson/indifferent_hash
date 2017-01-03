@@ -42,7 +42,9 @@ class TestAwesomeHash < MiniTest::Test
 
   def test_invert
     @ahash[:bar] = :baz
-    assert_equal Hash["baz" => "bar", "bar" => "foo"], @ahash.invert
+    @inverted = @ahash.invert
+    assert_equal Hash["baz" => "bar", "bar" => "foo"], @inverted
+    assert_instance_of AwesomeHash, @inverted
   end
 
   def test_key_eh
@@ -61,10 +63,6 @@ class TestAwesomeHash < MiniTest::Test
   def test_dig
     @ahash[:foo] = AwesomeHash["bar" => "baz"]
     assert_equal "baz", @ahash.dig(:foo, :bar)
-  end
-
-  def test_fetch
-    assert_equal "bar",@ahash.fetch(:foo)
   end
 
   def test_update
@@ -95,6 +93,7 @@ class TestAwesomeHash < MiniTest::Test
   end
 
   def test_fetch
+    assert_equal "bar", @ahash.fetch(:foo)
     assert_equal "bar", @ahash.fetch(:bar){|key| key}
   end
 
