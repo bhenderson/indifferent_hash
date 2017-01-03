@@ -6,6 +6,27 @@ class TestAwesomeHash < MiniTest::Test
     @ahash = AwesomeHash["foo" => "bar"]
   end
 
+  def test_class_create_from_hash
+    @ahash = AwesomeHash[:foo => {:bar => :baz, :arr => [{:taz => 1}]}]
+    assert_kind_of AwesomeHash, @ahash["foo"]
+    assert_kind_of AwesomeHash, @ahash["foo"]["arr"][0]
+  end
+
+  def test_class_create_from_tuple
+    @ahash = AwesomeHash[:foo, :bar, :baz, :taz]
+    assert_kind_of AwesomeHash, @ahash
+    assert_equal Hash["foo", :bar, "baz", :taz], @ahash.to_h
+  end
+
+  def test_class_create_fails_with_array_of_non_tuples
+    assert_output nil, /warning: wrong element/ do
+      AwesomeHash[ [:foo, :bar] ]
+    end
+    assert_raises ArgumentError do
+      AwesomeHash[ :foo ]
+    end
+  end
+
   def test_aref_with_string
     assert_equal "bar", @ahash["foo"]
   end
@@ -17,11 +38,6 @@ class TestAwesomeHash < MiniTest::Test
   def test_store_with_symbol
     @ahash[:bar] = "baz"
     assert_equal "baz", @ahash["bar"]
-  end
-
-  def test_class_create
-    @ahash = AwesomeHash[:foo => "bar"]
-    assert_equal "bar", @ahash["foo"]
   end
 
   def test_equal_equal
@@ -52,12 +68,6 @@ class TestAwesomeHash < MiniTest::Test
     assert_operator @ahash, :member?, :foo
     assert_operator @ahash, :has_key?, :foo
     assert_operator @ahash, :key?, :foo
-  end
-
-  def test_recursive_create
-    @ahash = AwesomeHash[:foo => {:bar => :baz, :arr => [{:taz => 1}]}]
-    assert_kind_of AwesomeHash, @ahash["foo"]
-    assert_kind_of AwesomeHash, @ahash["foo"]["arr"][0]
   end
 
   def test_dig
