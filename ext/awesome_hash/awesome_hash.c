@@ -104,10 +104,32 @@ rb_awesome_hash_new(VALUE klass, VALUE hash2)
 static VALUE
 rb_awesome_hash_aset(VALUE hash, VALUE key, VALUE val);
 
-// rb_hash_s_create reimplemented to support recursive klass creation.
+/*
+ *  call-seq:
+ *     Hash[ key, value, ... ]         -> new_hash
+ *     Hash[ [ [key, value], ... ] ]   -> new_hash
+ *     Hash[ object ]                  -> new_hash
+ *
+ *  Creates a new hash populated with the given objects. All Symbol keys are
+ *  converted to strings. And all Hash values (or Arrays of Hashes) are
+ *  converted to AwesomeHash.
+ *
+ *  Similar to the literal <code>{ _key_ => _value_, ... }</code>. In the first
+ *  form, keys and values occur in pairs, so there must be an even number of
+ *  arguments.
+ *
+ *  The second and third form take a single argument which is either an array
+ *  of key-value pairs or an object convertible to a hash.
+ *
+ *     AwesomeHash["a", 100, :b, 200]             #=> {"a"=>100, "b"=>200}
+ *     AwesomeHash[ [ ["a", 100], [:b, 200] ] ]   #=> {"a"=>100, "b"=>200}
+ *     AwesomeHash["a" => 100, :b => 200]         #=> {"a"=>100, "b"=>200}
+ */
+
 static VALUE
 rb_awesome_hash_s_create(int argc, VALUE *argv, VALUE klass)
 {
+	// rb_hash_s_create reimplemented to support recursive klass creation.
 	VALUE hash, tmp;
 	int i;
 
@@ -167,6 +189,11 @@ rb_awesome_hash_s_create(int argc, VALUE *argv, VALUE klass)
 	return hash;
 }
 
+/*
+ *  call-seq:
+ *     hsh[key]    ->  value
+ */
+
 static VALUE
 rb_awesome_hash_aref(VALUE hash, VALUE key)
 {
@@ -189,14 +216,12 @@ rb_awesome_hash_equal(VALUE self, VALUE hash)
 }
 
 /*
-static VALUE
-rb_awesome_hash_default(int argc, VALUE *argv, VALUE hash)
-{
-	rb_check_arity(argc, 0, 1);
-	if (argc) convert_key(argv);
-	return rb_call_super(argc, argv);
-}
-*/
+ *  call-seq:
+ *     hsh.fetch(key [, default] )       -> obj
+ *     hsh.fetch(key) {| key | block }   -> obj
+ *
+ *  Same as Hash#fetch, but key is converted to string if Symbol.
+ */
 
 static VALUE
 rb_awesome_hash_fetch(int argc, VALUE *argv, VALUE hash)
@@ -275,6 +300,13 @@ rb_awesome_hash_dig(int argc, VALUE *argv, VALUE self)
 	convert_key(argv);
 	return rb_call_super(argc, argv);
 }
+
+/*
+ *  An AwesomeHash is a subclass of Hash, but all methods that take a key, are
+ *  converted to strings if they are Symbols.
+ *
+ *  Set methods also convert values recursively to AwesomeHash if they are a Hash.
+ */
 
 void Init_awesome_hash()
 {
