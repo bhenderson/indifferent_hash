@@ -1,8 +1,10 @@
 .autotest
+.gitignore
 History.txt
 Manifest.txt
-README.txt
+README.rdoc
 Rakefile
-bin/indifferent_hash
+ext/indifferent_hash/extconf.rb
+ext/indifferent_hash/indifferent_hash.c
 lib/indifferent_hash.rb
 test/test_indifferent_hash.rb
