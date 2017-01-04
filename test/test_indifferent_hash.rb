@@ -1,34 +1,34 @@
 require "minitest/autorun"
-require "awesome_hash"
+require "indifferent_hash"
 
-class TestAwesomeHash < MiniTest::Test
+class TestIndifferentHash < MiniTest::Test
   def setup
-    @ahash = AwesomeHash["foo" => "bar"]
+    @ahash = IndifferentHash["foo" => "bar"]
   end
 
   def test_class_create_from_hash
-    @ahash = AwesomeHash[:foo => {:bar => :baz, :arr => [{:taz => 1}]}]
-    assert_kind_of AwesomeHash, @ahash["foo"]
-    assert_kind_of AwesomeHash, @ahash["foo"]["arr"][0]
+    @ahash = IndifferentHash[:foo => {:bar => :baz, :arr => [{:taz => 1}]}]
+    assert_kind_of IndifferentHash, @ahash["foo"]
+    assert_kind_of IndifferentHash, @ahash["foo"]["arr"][0]
   end
 
   def test_class_create_from_tuple
-    @ahash = AwesomeHash[:foo, :bar, :baz, :taz]
-    assert_kind_of AwesomeHash, @ahash
+    @ahash = IndifferentHash[:foo, :bar, :baz, :taz]
+    assert_kind_of IndifferentHash, @ahash
     assert_equal Hash["foo", :bar, "baz", :taz], @ahash.to_h
   end
 
   def test_class_create_from_array
-    @ahash = AwesomeHash[ [[:a], [:b, 2]] ]
+    @ahash = IndifferentHash[ [[:a], [:b, 2]] ]
     assert_equal({"a" => nil, "b" => 2}, @ahash)
   end
 
   def test_class_create_fails_with_array_of_non_tuples
     assert_output nil, /warning: wrong element/ do
-      AwesomeHash[ [:foo, :bar] ]
+      IndifferentHash[ [:foo, :bar] ]
     end
     assert_raises ArgumentError do
-      AwesomeHash[ :foo ]
+      IndifferentHash[ :foo ]
     end
   end
 
@@ -65,7 +65,7 @@ class TestAwesomeHash < MiniTest::Test
     @ahash[:bar] = :baz
     @inverted = @ahash.invert
     assert_equal Hash["baz" => "bar", "bar" => "foo"], @inverted
-    assert_instance_of AwesomeHash, @inverted
+    assert_instance_of IndifferentHash, @inverted
   end
 
   def test_key_eh
@@ -76,7 +76,7 @@ class TestAwesomeHash < MiniTest::Test
   end
 
   def test_dig
-    @ahash[:foo] = AwesomeHash["bar" => "baz"]
+    @ahash[:foo] = IndifferentHash["bar" => "baz"]
     assert_equal "baz", @ahash.dig(:foo, :bar)
   end
 
@@ -90,7 +90,7 @@ class TestAwesomeHash < MiniTest::Test
 
   def test_store_recursive
     @ahash[:bar] = {:baz => :taz}
-    assert_kind_of AwesomeHash, @ahash[:bar]
+    assert_kind_of IndifferentHash, @ahash[:bar]
   end
 
   def test_default
@@ -102,7 +102,7 @@ class TestAwesomeHash < MiniTest::Test
   end
 
   def test_convert_subclass
-    @klass = Class.new(AwesomeHash)
+    @klass = Class.new(IndifferentHash)
     @ahash = @klass[:foo => {:bar => :baz}]
     assert_kind_of @klass, @ahash["foo"]
   end
@@ -115,7 +115,7 @@ class TestAwesomeHash < MiniTest::Test
   def test_merge
     @newhash = @ahash.merge("bar" => "baz")
     refute @ahash.key?("bar")
-    assert_kind_of AwesomeHash, @newhash
+    assert_kind_of IndifferentHash, @newhash
     assert_equal "baz", @newhash[:bar]
   end
 
@@ -127,7 +127,7 @@ class TestAwesomeHash < MiniTest::Test
   def test_to_h
     @ahash[:foo] = {:bar => :baz}
     assert_kind_of Hash, @ahash.to_h
-    assert_kind_of AwesomeHash, @ahash["foo"]
+    assert_kind_of IndifferentHash, @ahash["foo"]
     assert_kind_of Hash, @ahash.to_h["foo"]
   end
 

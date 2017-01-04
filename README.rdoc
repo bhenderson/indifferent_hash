@@ -1,19 +1,19 @@
-= awesome_hash
+= indifferent_hash
 
-* https://github.com/bhenderson/awesome_hash
+* https://github.com/bhenderson/indifferent_hash
 
 == DESCRIPTION:
 
-AwesomeHash is HashWithIndifferentAccess but written in C!
+IndifferentHash is HashWithIndifferentAccess but written in C!
 
 == SYNOPSIS:
 
-  h = AwesomeHash["foo" => "bar"]
+  h = IndifferentHash["foo" => "bar"]
   h[:foo] # => "bar"
 
 == INSTALL:
 
-* gem install awesome_hash
+* gem install indifferent_hash
 
 == DEVELOPERS:
 

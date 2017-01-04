@@ -3,6 +3,6 @@ History.txt
 Manifest.txt
 README.txt
 Rakefile
-bin/awesome_hash
-lib/awesome_hash.rb
-test/test_awesome_hash.rb
+bin/indifferent_hash
+lib/indifferent_hash.rb
+test/test_indifferent_hash.rb
