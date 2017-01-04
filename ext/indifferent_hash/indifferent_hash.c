@@ -319,7 +319,7 @@ void Init_indifferent_hash()
 	rb_define_method(rb_cIndifferentHash,"[]=", rb_indifferent_hash_aset, 2);
 	rb_define_method(rb_cIndifferentHash,"fetch", rb_indifferent_hash_fetch, -1);
 	rb_define_method(rb_cIndifferentHash,"store", rb_indifferent_hash_aset, 2);
-	// see tests
+	// stick with Hash impelementation, rather than rails'.
 	/* rb_define_method(rb_cIndifferentHash,"default", rb_indifferent_hash_default, -1); */
 
 	rb_define_method(rb_cIndifferentHash,"values_at", rb_indifferent_hash_values_at, -1);

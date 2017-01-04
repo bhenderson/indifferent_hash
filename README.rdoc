@@ -6,6 +6,20 @@
 
 IndifferentHash is HashWithIndifferentAccess but written in C!
 
+== FEATURES/PROBLEMS:
+
+The goal was not 100% compatibility with rails, but to be closer to Hash.
+Key differences:
+
+* HashWithIndifferentAccess::new takes a hash and calls update with it.
+  IndifferentHash keeps Hash::new behavior. Use ::[] to convert hashes.
+* HashWithIndifferentAccess changes #default to return the set value after the
+  key has been converted if it exists. This behavior does appear to be
+  described in the docs for Hash, but per my testing, was never actually part
+  of any implementation for any version of ruby.
+
+This is my first C extension, so any PRs are welcome!
+
 == SYNOPSIS:
 
   h = IndifferentHash["foo" => "bar"]
