@@ -8,6 +8,7 @@ Hoe.spec "indifferent_hash" do
   developer("Brian Henderson", "henderson.bj@gmail.com")
   self.readme_file = "README.rdoc"
   self.extra_dev_deps << ['rake-compiler', '>= 0']
+  self.extra_dev_deps << ['benchmark-ips', '>= 0']
   self.spec_extras = { :extensions => ["ext/indifferent_hash/extconf.rb"] }
 
   license "MIT" # this should match the license in the README
@@ -18,5 +19,9 @@ Hoe.spec "indifferent_hash" do
 end
 
 Rake::Task[:test].prerequisites << :compile
+
+task :bench => :test do
+  ruby '-I', 'lib:test', 'test/benchmark.rb'
+end
 
 # vim: syntax=ruby
